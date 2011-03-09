@@ -44,11 +44,11 @@ class Client:
         >>> datastore = _make_test_client()
 
         Here, _make_test_client is a helper function that just returns 
-        Client('/tmp/mogilelocal', 'http://127.0.0.1:7500'), for easy
+        Client('/var/mogdata', ['http://127.0.0.1:7500']), for easy
         doctesting.
 
         >>> datastore.dir
-        '/tmp/mogilelocal'
+        '/var/mogdata'
 
         >>> datastore.url
         'http://127.0.0.1:7500'
@@ -57,7 +57,7 @@ class Client:
         'Local filesystem'
 
         >>> datastore.hosts[0]
-        'http://127.0.0.1:7001/'
+        'http://127.0.0.1:7001'
 
         >>> datastore.verify_data
         False
@@ -66,7 +66,7 @@ class Client:
         False
 
         """
-        self.dir = "/tmp/mogilelocal"
+        self.dir = "/var/mogdata"
         self.url = "http://127.0.0.1:7500"
 
         self.domain = domain
@@ -114,7 +114,7 @@ class Client:
         ValueError: Key "foo/.." contains .. references
 
         >>> datastore._real_path('foo/..namme')
-        '/tmp/mogilelocal/foo/..namme'
+        '/var/mogdata/foo/..namme'
 
         >>> datastore._real_path('../whatever')
         Traceback (most recent call last):
@@ -300,7 +300,6 @@ class Client:
         True
         >>> datastore.delete('test/newer.txt')
         True
-
         """
         try:
             if not fkey in self or tkey in self:
@@ -458,7 +457,7 @@ class Client:
 
         >>> datastore = _make_test_client()
         >>> datastore['copy_from'] = 'Test'
-        >>> datastore.send_file('copy_to', '/tmp/mogilelocal/copy_from')
+        >>> datastore.send_file('copy_to', '/var/mogdata/copy_from')
         True
         >>> datastore['copy_to']
         'Test'
@@ -488,7 +487,7 @@ class Client:
 
         >>> datastore = _make_test_client()
         >>> datastore['copy_from'] = 'This is a test.\nOf the emergency b-cast system.'
-        >>> fp = open('/tmp/mogilelocal/copy_from')
+        >>> fp = open('/var/mogdata/copy_from')
         >>> datastore.send_bigfile('copy_to', fp)
         True
 
@@ -570,7 +569,7 @@ class Admin:
         return True
 
 def _make_test_client():
-    return Client()
+    return Client('Local filesystem', ['http://127.0.0.1:7001'])
 
 if __name__ == "__main__":
     import doctest
